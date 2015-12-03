@@ -1,0 +1,21 @@
+{
+  "name": "aoepeople/awsinspector",
+  "description": "AWS Inspector",
+  "authors": [
+    {
+      "name": "Fabrizio Branca",
+      "email": "firstname.lastname@aoe.com"
+    }
+  ],
+  "require": {
+    "symfony/console": "*",
+    "symfony/yaml": "*",
+    "aws/aws-sdk-php": "^3.8"
+  },
+  "autoload": {
+    "psr-4": {
+      "": "src"
+    }
+  },
+  "bin": ["src/awsinspector.php"]
+}
