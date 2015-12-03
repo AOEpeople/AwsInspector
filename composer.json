@@ -10,6 +10,7 @@
   "require": {
     "symfony/console": "*",
     "symfony/yaml": "*",
+    "vlucas/phpdotenv": "~2.1",
     "aws/aws-sdk-php": "^3.8"
   },
   "autoload": {
