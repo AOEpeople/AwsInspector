@@ -2,7 +2,6 @@
 
 namespace AwsInspector\Model\Ec2;
 
-use AwsInspector\Ssh\Command;
 use AwsInspector\Ssh\Connection;
 use AwsInspector\Ssh\PrivateKey;
 
@@ -16,6 +15,9 @@ class Instance
     public function __construct(array $apiData)
     {
         $this->apiData = $apiData;
+        if (getenv('AWSINSPECTOR_DEFAULT_EC2_USER')) {
+            $this->username = getenv('AWSINSPECTOR_DEFAULT_EC2_USER');
+        }
     }
 
     public function getPublicIp()
