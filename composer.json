@@ -14,9 +14,8 @@
     "aws/aws-sdk-php": "^3.8"
   },
   "autoload": {
-    "psr-4": {
-      "": "src"
-    }
+    "psr-4": { "": "src" },
+    "files": ["src/dotenv.php"]
   },
   "bin": ["src/awsinspector.php"]
 }
