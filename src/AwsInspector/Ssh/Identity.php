@@ -2,61 +2,34 @@
 
 namespace AwsInspector\Ssh;
 
-use Vault\Vault;
-
 class Identity
 {
 
-    protected $privateKeyFile;
+    protected $privateKey;
 
-    protected $unlocked;
-
-    public function __construct($privateKeyFile)
+    public function __construct(PrivateKey $privateKey)
     {
-        if (is_file($privateKeyFile)) {
-            $this->privateKeyFile = $privateKeyFile;
-        } else {
-            $encryptedPrivateKeyFile = $privateKeyFile . '.encrypted';
-            $this->privateKeyFile = $privateKeyFile . '.unlocked';
-            if (is_file($encryptedPrivateKeyFile)) {
-                if (class_exists('\Vault\Vault')) {
-                    $vault = new Vault();
-                    $vault->decryptFile($encryptedPrivateKeyFile, $this->privateKeyFile);
-                    chmod($this->privateKeyFile, 0600);
-                    $this->unlocked = true;
-                } else {
-                    throw new \Exception('Please install aoepeople/vault');
-                }
-            } else {
-                throw new \Exception('Could not find private key file ' . $privateKeyFile);
-            }
-        }
-        $this->privateKeyFile = realpath($this->privateKeyFile);
+        $this->privateKey = $privateKey;
     }
 
-    public function getPrivateKeyFilePath() {
-        return $this->privateKeyFile;
+    public function getPrivateKeyFile() {
+        return $this->privateKey->getPrivateKeyFile();
     }
 
     public function loadIdentity()
     {
-        if (!Agent::identityLoaded($this->privateKeyFile)) {
-            Agent::addIdentity($this->privateKeyFile);
+        if (!Agent::identityLoaded($this->getPrivateKeyFile())) {
+            Agent::addIdentity($this->getPrivateKeyFile());
         }
         return $this;
     }
 
     public function removeIdentity()
     {
-        if (!empty($this->privateKeyFile) && Agent::identityLoaded($this->privateKeyFile)) {
+        if (!empty($this->getPrivateKeyFile()) && Agent::identityLoaded($this->getPrivateKeyFile())) {
             // echo "Removing identity {$this->unlockedPrivateKeyFile}\n";
-            Agent::deleteIdentity($this->privateKeyFile);
-            if ($this->unlocked) {
-                unlink($this->privateKeyFile);
-                $this->unlocked = null;
-            }
+            Agent::deleteIdentity($this->getPrivateKeyFile());
         }
-
         return $this;
     }
 

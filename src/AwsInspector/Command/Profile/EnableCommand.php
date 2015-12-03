@@ -8,14 +8,14 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 
-class UseCommand extends Command
+class EnableCommand extends Command
 {
 
     protected function configure()
     {
         $this
-            ->setName('profile:use')
-            ->setDescription('Use profile')
+            ->setName('profile:enable')
+            ->setDescription('Enable profile')
             ->addArgument(
                 'profile',
                 InputArgument::REQUIRED,

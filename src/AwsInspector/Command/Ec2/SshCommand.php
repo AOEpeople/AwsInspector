@@ -3,6 +3,8 @@
 namespace AwsInspector\Command\Ec2;
 
 use AwsInspector\Finder;
+use AwsInspector\Model\Ec2\Instance;
+use AwsInspector\Model\Ec2\Repository;
 use Lib\AwsInspector;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
@@ -20,11 +22,11 @@ class SshCommand extends Command
     {
         $this
             ->setName('ec2:ssh')
-            ->setDescription('SSH into an ec2 instance')
+            ->setDescription('SSH into an EC2 instance')
             ->addArgument(
                 'instance',
                 InputArgument::REQUIRED,
-                'Instance (IP address or instance id)'
+                'Instance (public or private IP address or instance id)'
             )
             ->addOption(
                 'print',
@@ -44,41 +46,27 @@ class SshCommand extends Command
     {
         $instance = $input->getArgument('instance');
 
-        $finder = new Finder();
-        $instanceData = $finder->findEc2Instance($instance);
-        if ($instanceData === false) {
+        $repository = new Repository();
+        $instance = $repository->findEc2Instance($instance);
+        if (!$instance instanceof Instance) {
             throw new \Exception('Could not find instance');
         }
 
-        $keyName = $instanceData['KeyName'];
-        $ip = $instanceData['Public IP'];
+        $connection = $instance->getSshConnection();
 
-        $identity = new \AwsInspector\Ssh\Identity('keys/'.$keyName.'.pem');
-        $identity->loadIdentity();
-        $path = $identity->getPrivateKeyFilePath();
-
-        $descriptorSpec = array(
-            0 => STDIN,
-            1 => STDOUT,
-            2 => STDERR,
-        );
-        $exec = 'ssh -o "UserKnownHostsFile /dev/null" -o "StrictHostKeyChecking no" -i ' . escapeshellarg($path) . ' ubuntu@'.$ip;
-
-        $command = $input->getOption('command');
-        if ($command) {
-            $exec .= ' '.escapeshellarg($command);
+        if ($command = $input->getOption('command')) {
+            $commandObj = new \AwsInspector\Ssh\Command($connection, $command);
+            if ($input->getOption('print')) {
+                $output->writeln($commandObj->__toString());
+                return 0;
+            }
+            $res = $commandObj->exec();
+            $output->write($res['output']);
+            return $res['returnVar'];
         }
 
-        if ($input->getOption('print')) {
-            $output->writeln($exec);
-            return;
-        }
-
-        $pipes = array();
-        $process = proc_open($exec, $descriptorSpec, $pipes);
-        if (is_resource($process)) {
-            proc_close($process);
-        }
+        $connection->connect();
+        return 0;
     }
 
 }

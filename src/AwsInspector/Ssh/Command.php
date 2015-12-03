@@ -4,21 +4,18 @@ namespace AwsInspector\Ssh;
 
 class Command {
 
-    protected $username;
-    protected $host;
     protected $command;
+    protected $connection;
 
-    public function __construct($username, $host, $command) {
-        $this->username = $username;
-        $this->host = $host;
+    public function __construct(Connection $connection, $command) {
+        $this->connection = $connection;
         $this->command = $command;
     }
 
     public function __toString() {
         return sprintf(
-            'ssh -o ControlPersist=yes -o ControlMaster=auto -S ~/mux_%%r@%%h:%%p -o LogLevel=QUIET -o StrictHostKeyChecking=no -A -t %s@%s %s',
-            $this->username,
-            $this->host,
+            '%s %s',
+            $this->connection,
             $this->command
         );
     }
@@ -33,20 +30,20 @@ class Command {
         ];
     }
 
-    /**
-     * Convenience method
-     *
-     * @param $hopUsername
-     * @param $hopHost
-     * @param $targetUsername
-     * @param $targetHost
-     * @param $command
-     * @return mixed
-     */
-    public static function hopExec($hopUsername, $hopHost, $targetUsername, $targetHost, $command) {
-        $target = new Command($targetUsername, $targetHost, $command);
-        $hop = new Command($hopUsername, $hopHost, $target);
-        return $hop->exec();
-    }
+    ///**
+    // * Convenience method
+    // *
+    // * @param $hopUsername
+    // * @param $hopHost
+    // * @param $targetUsername
+    // * @param $targetHost
+    // * @param $command
+    // * @return mixed
+    // */
+    //public static function hopExec($hopUsername, $hopHost, $targetUsername, $targetHost, $command) {
+    //    $target = new Command($targetUsername, $targetHost, $command);
+    //    $hop = new Command($hopUsername, $hopHost, $target);
+    //    return $hop->exec();
+    //}
 
 }

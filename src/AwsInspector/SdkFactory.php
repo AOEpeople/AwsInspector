@@ -4,20 +4,30 @@ namespace AwsInspector;
 
 class SdkFactory {
 
-    protected static $sdk;
+    protected static $sdks=[];
 
     /**
      * @return \Aws\Sdk
      */
-    public static function getSdk()
+    public static function getSdk($profile='default')
     {
-        if (is_null(self::$sdk)) {
-            self::$sdk = new \Aws\Sdk([
+        if (!isset(self::$sdks[$profile])) {
+            $params = [
                 'version' => 'latest',
                 'region' => getenv('AWS_DEFAULT_REGION')
-            ]);
+            ];
+            if ($profile != 'default') {
+                $profileManager = new ProfileManager();
+                $profileConfig = $profileManager->getProfileConfig($profile);
+                $params['region'] = $profileConfig['region'];
+                $params['credentials'] = [
+                    'key' => $profileConfig['access_key'],
+                    'secret' => $profileConfig['secret_key']
+                ];
+            }
+            self::$sdks[$profile] = new \Aws\Sdk($params);
         }
-        return self::$sdk;
+        return self::$sdks[$profile];
     }
 
     /**
@@ -25,8 +35,8 @@ class SdkFactory {
      * @return \Aws\AwsClientInterface
      * @throws \Exception
      */
-    public static function getClient($client) {
-        return self::getSdk()->createClient($client);
+    public static function getClient($client, $profile='default') {
+        return self::getSdk($profile)->createClient($client);
     }
 
 }
