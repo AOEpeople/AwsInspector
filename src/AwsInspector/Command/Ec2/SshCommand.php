@@ -52,6 +52,8 @@ class SshCommand extends Command
             throw new \Exception('Could not find instance');
         }
 
+        $output->writeln('Found instance. Public IP: ' . $instance->getPublicIp());
+
         $connection = $instance->getSshConnection();
 
         if ($command = $input->getOption('command')) {
@@ -63,6 +65,11 @@ class SshCommand extends Command
             $res = $commandObj->exec();
             $output->write($res['output']);
             return $res['returnVar'];
+        }
+
+        if ($input->getOption('print')) {
+            $output->writeln($connection->__toString());
+            return 0;
         }
 
         $connection->connect();
