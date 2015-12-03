@@ -13,6 +13,9 @@
     "vlucas/phpdotenv": "~2.1",
     "aws/aws-sdk-php": "^3.8"
   },
+  "suggest": {
+    "aoepeople/vault": "Allows encrypting/decrypting ssh keys and profiles on the fly"
+  },
   "autoload": {
     "psr-4": { "": "src" },
     "files": ["src/dotenv.php"]
