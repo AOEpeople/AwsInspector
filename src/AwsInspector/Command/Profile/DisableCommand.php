@@ -20,6 +20,10 @@ class DisableCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if (!is_file('.env')) {
+            $output->writeln('No .env file found');
+            return;
+        }
         if (!unlink('.env')) {
             throw new \Exception('Error deleting .env file');
         }
