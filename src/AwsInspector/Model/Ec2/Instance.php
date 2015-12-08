@@ -20,6 +20,11 @@ class Instance
         }
     }
 
+    public function getInstanceId()
+    {
+        return $this->apiData['InstanceId'];
+    }
+
     public function getPublicIp()
     {
         return $this->apiData['PublicIpAddress'];
@@ -30,15 +35,17 @@ class Instance
         return $this->apiData['PrivateIpAddress'];
     }
 
-    public function getPrivateKey() {
+    public function getPrivateKey()
+    {
         $keyName = $this->apiData['KeyName'];
         if (empty($keyName)) {
             throw new \Exception('No KeyName found');
         }
-        return PrivateKey::get('keys/'.$keyName.'.pem');
+        return PrivateKey::get('keys/' . $keyName . '.pem');
     }
 
-    public function getSshConnection() {
+    public function getSshConnection()
+    {
         return new Connection($this->username, $this->getPublicIp(), $this->getPrivateKey());
     }
 
@@ -77,8 +84,9 @@ class Instance
         return intval(end($result['output']));
     }
 
-    public function extractData(array $mapping) {
-        $result=[];
+    public function extractData(array $mapping)
+    {
+        $result = [];
         foreach ($mapping as $fieldName => $expression) {
             $result[$fieldName] = \JmesPath\Env::search($expression, $this->apiData);
         }

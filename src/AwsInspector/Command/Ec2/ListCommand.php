@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ListCommand extends Command
+class ListCommand extends AbstractCommand
 {
 
     protected function configure()
@@ -23,7 +23,7 @@ class ListCommand extends Command
                 'tag',
                 't',
                 InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
-                'tag (Example: "Environment=Deploy")'
+                'tag (Example: "Environment:Deploy")'
             )
             ->addOption(
                 'column',
@@ -71,15 +71,6 @@ class ListCommand extends Command
             ->setRows($rows)
         ;
         $table->render();
-    }
-
-    protected function convertTags(array $tags) {
-        $convertedTags=[];
-        foreach ($tags as $value) {
-            list($tagName, $tagValue) = explode(':', $value);
-            $convertedTags[$tagName] = $tagValue;
-        }
-        return $convertedTags;
     }
 
 }
