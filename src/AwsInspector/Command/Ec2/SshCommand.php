@@ -129,7 +129,7 @@ class SshCommand extends AbstractCommand
                 return 0;
             }
             $res = $commandObj->exec();
-            $output->write($res['output']);
+            $output->writeln($res['output']);
             return $res['returnVar'];
         }
 
