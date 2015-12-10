@@ -12,7 +12,9 @@ class Agent {
         if (!is_file($privateKeyFile)) {
             throw new \Exception('Private key file not found.');
         }
-        exec('ssh-add ' . $privateKeyFile . ' >/dev/null 2>&1', $output);
+        // exec('ssh-add ' . $privateKeyFile . ' >/dev/null 2>&1', $output);
+        exec('ssh-add ' . $privateKeyFile, $output);
+        var_dump($output);
     }
 
     /**
