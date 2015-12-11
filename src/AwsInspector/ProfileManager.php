@@ -54,9 +54,8 @@ class ProfileManager {
         return isset($config[$profile]);
     }
 
-    public function writeProfileToDotEnv($profile, $file='.env') {
+    protected function getEnvVars($profile) {
         $profileConfig = $this->getProfileConfig($profile);
-
         $mapping = [
             'region' => 'AWS_DEFAULT_REGION',
             'access_key' => 'AWS_ACCESS_KEY_ID',
@@ -71,6 +70,17 @@ class ProfileManager {
             }
             $tmp[] = $mapping[$key].'='.$profileConfig[$key];
         }
+        return $tmp;
+    }
+
+    public function loadProfile($profile) {
+        foreach ($this->getEnvVars($profile) as $envVar) {
+            putenv($envVar);
+        }
+    }
+
+    public function writeProfileToDotEnv($profile, $file='.env') {
+        $tmp = $this->getEnvVars($profile);
 
         $res = file_put_contents($file, implode("\n", $tmp));
         if ($res === false) {
