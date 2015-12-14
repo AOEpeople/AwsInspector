@@ -7,8 +7,17 @@ class Command {
     protected $command;
     protected $connection;
 
+    /**
+     * Command constructor.
+     *
+     * @param Connection $connection
+     * @param string $command
+     */
     public function __construct(Connection $connection, $command) {
         $this->connection = $connection;
+        if (!is_string($command)) {
+            throw new \InvalidArgumentException("Command must be a string.");
+        }
         $this->command = $command;
     }
 
@@ -29,21 +38,5 @@ class Command {
             'returnVar' => $returnVar
         ];
     }
-
-    ///**
-    // * Convenience method
-    // *
-    // * @param $hopUsername
-    // * @param $hopHost
-    // * @param $targetUsername
-    // * @param $targetHost
-    // * @param $command
-    // * @return mixed
-    // */
-    //public static function hopExec($hopUsername, $hopHost, $targetUsername, $targetHost, $command) {
-    //    $target = new Command($targetUsername, $targetHost, $command);
-    //    $hop = new Command($hopUsername, $hopHost, $target);
-    //    return $hop->exec();
-    //}
 
 }

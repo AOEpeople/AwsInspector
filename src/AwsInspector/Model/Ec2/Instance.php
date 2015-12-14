@@ -44,9 +44,38 @@ class Instance
         return PrivateKey::get('keys/' . $keyName . '.pem');
     }
 
+    /**
+     * Get jump host (
+     *
+     * Overwrite this method in your inheriting class and return
+     * a \AwsInspector\Model\Ec2\Instance representing your bastion server
+     *
+     * @return null|Instance
+     */
+    public function getJumpHost()
+    {
+       return null;
+    }
+
+    public function getConnectionIp()
+    {
+        return $this->getPublicIp() ? $this->getPublicIp() : $this->getPrivateIp();
+    }
+
+    /**
+     * Get SSH connection
+     *
+     * @return Connection
+     * @throws \Exception
+     */
     public function getSshConnection()
     {
-        return new Connection($this->username, $this->getPublicIp(), $this->getPrivateKey());
+        return new Connection(
+            $this->username,
+            $this->getConnectionIp(),
+            $this->getPrivateKey(),
+            $this->getJumpHost()
+        );
     }
 
     public function exec($command)

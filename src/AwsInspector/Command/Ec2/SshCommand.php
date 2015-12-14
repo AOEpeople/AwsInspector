@@ -4,6 +4,7 @@ namespace AwsInspector\Command\Ec2;
 
 use AwsInspector\Model\Ec2\Instance;
 use AwsInspector\Model\Ec2\Repository;
+use AwsInspector\Registry;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -110,6 +111,8 @@ class SshCommand extends AbstractCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        Registry::set('output', $output);
+
         $instance = $input->getArgument('instance');
 
         $repository = new Repository();
@@ -118,7 +121,7 @@ class SshCommand extends AbstractCommand
             throw new \Exception('Could not find instance');
         }
 
-        $output->writeln('Found instance. Public IP: ' . $instance->getPublicIp());
+        $output->writeln('[Found instance. Connection IP: ' . $instance->getConnectionIp() . ']');
 
         $connection = $instance->getSshConnection();
 
