@@ -12,6 +12,8 @@ class Instance
 
     protected $username = 'ubuntu';
 
+    protected $multiplexSshConnection = false;
+
     public function __construct(array $apiData)
     {
         $this->apiData = $apiData;
@@ -27,12 +29,12 @@ class Instance
 
     public function getPublicIp()
     {
-        return $this->apiData['PublicIpAddress'];
+        return isset($this->apiData['PublicIpAddress']) ? $this->apiData['PublicIpAddress'] : false;
     }
 
     public function getPrivateIp()
     {
-        return $this->apiData['PrivateIpAddress'];
+        return isset($this->apiData['PrivateIpAddress']) ? $this->apiData['PrivateIpAddress'] : false;
     }
 
     public function getPrivateKey()
@@ -74,7 +76,8 @@ class Instance
             $this->username,
             $this->getConnectionIp(),
             $this->getPrivateKey(),
-            $this->getJumpHost()
+            $this->getJumpHost(),
+            $this->multiplexSshConnection
         );
     }
 

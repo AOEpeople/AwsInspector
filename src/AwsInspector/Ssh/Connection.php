@@ -30,6 +30,11 @@ class Connection
     protected $privateKey;
 
     /**
+     * @var bool
+     */
+    protected $multiplex;
+
+    /**
      * @var \AwsInspector\Model\Ec2\Instance
      */
     protected $jumpHost;
@@ -41,13 +46,15 @@ class Connection
      * @param $host
      * @param PrivateKey|null $privateKey
      * @param \AwsInspector\Model\Ec2\Instance|null $jumpHost
+     * @param bool $multiplex
      */
-    public function __construct($username, $host, PrivateKey $privateKey = null, \AwsInspector\Model\Ec2\Instance $jumpHost = null)
+    public function __construct($username, $host, PrivateKey $privateKey = null, \AwsInspector\Model\Ec2\Instance $jumpHost = null, $multiplex=false)
     {
         $this->username = $username;
         $this->host = $host;
         $this->privateKey = $privateKey;
         $this->jumpHost = $jumpHost;
+        $this->multiplex = $multiplex;
     }
 
     public function __toString()
@@ -66,7 +73,12 @@ class Connection
             $parts[] = '-o ProxyCommand="' . $proxyCommand->__toString() . '"';
         }
 
-        $parts[] = '-o ControlPersist=yes -o ControlMaster=auto -S ~/mux_%%r@%%h:%%p'; // multiplexing
+        if ($this->multiplex) {
+            // $parts[] = '-o ControlPersist=yes -o ControlMaster=auto -S ~/mux_%%r@%%h:%%p';
+            $parts[] = '-o ControlPersist=yes -o ControlMaster=auto -S ~/mux_'.$this->username.'@'.$this->host.':22';
+        }
+
+        $parts[] = '-o ConnectTimeout=5';
         $parts[] = '-o LogLevel=QUIET';
         $parts[] = '-o StrictHostKeyChecking=no';
         $parts[] = '-t'; // Force pseudo-tty allocation.
