@@ -5,10 +5,8 @@ namespace AwsInspector\Model\Ec2;
 use AwsInspector\Ssh\Connection;
 use AwsInspector\Ssh\PrivateKey;
 
-class Instance
+class Instance extends \AwsInspector\Model\AbstractResource
 {
-
-    protected $apiData;
 
     protected $username = 'ubuntu';
 
@@ -16,7 +14,7 @@ class Instance
 
     public function __construct(array $apiData)
     {
-        $this->apiData = $apiData;
+        parent::__construct($apiData);
         if (getenv('AWSINSPECTOR_DEFAULT_EC2_USER')) {
             $this->username = getenv('AWSINSPECTOR_DEFAULT_EC2_USER');
         }
@@ -114,15 +112,6 @@ class Instance
     {
         $result = $this->exec('curl -s -o /dev/null -w "%{http_code}" ' . escapeshellarg($url));
         return intval(end($result['output']));
-    }
-
-    public function extractData(array $mapping)
-    {
-        $result = [];
-        foreach ($mapping as $fieldName => $expression) {
-            $result[$fieldName] = \JmesPath\Env::search($expression, $this->apiData);
-        }
-        return $result;
     }
 
 }
