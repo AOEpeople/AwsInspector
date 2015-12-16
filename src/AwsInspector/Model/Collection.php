@@ -1,6 +1,6 @@
 <?php
 
-namespace AwsInspector\Model\Ec2;
+namespace AwsInspector\Model;
 
 class Collection extends \SplObjectStorage
 {

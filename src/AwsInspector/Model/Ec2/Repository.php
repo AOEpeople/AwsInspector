@@ -40,7 +40,7 @@ class Repository {
 
     /**
      * @param array $filters
-     * @return Collection
+     * @return \AwsInspector\Model\Collection
      * @throws \Exception
      */
     public function findEc2Instances(array $filters=[]) {
@@ -48,7 +48,7 @@ class Repository {
         $result = $ec2Client->describeInstances(['Filters' => $filters]);
         $rows = $result->search('Reservations[].Instances[]');
 
-        $collection = new Collection();
+        $collection = new \AwsInspector\Model\Collection();
         foreach ($rows as $row) {
             $instance = Factory::create($row);
             if ($instance !== false) {
@@ -60,7 +60,7 @@ class Repository {
 
     /**
      * @param array $tags
-     * @return Collection
+     * @return \AwsInspector\Model\Collection
      */
     public function findEc2InstancesByTags(array $tags=array()) {
         $filters = [['Name' => 'instance-state-name', "Values" => ['running']]];

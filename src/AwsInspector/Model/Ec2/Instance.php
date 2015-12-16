@@ -37,17 +37,6 @@ class Instance extends \AwsInspector\Model\AbstractResource
         return PrivateKey::get('keys/' . $keyName . '.pem');
     }
 
-    public function getAssocTags()
-    {
-        return $this->convertToAssocArray($this->getTags());
-    }
-
-    public function getTag($key)
-    {
-        $tags = $this->getAssocTags();
-        return isset($tags[$key]) ? $tags[$key] : null;
-    }
-
     /**
      * Get jump host (bastion server)
      *

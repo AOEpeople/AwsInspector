@@ -17,11 +17,6 @@ namespace AwsInspector\Model\SecurityGroup;
 class SecurityGroup extends \AwsInspector\Model\AbstractResource
 {
 
-    public function getAssocTags()
-    {
-        return $this->convertToAssocArray($this->getTags());
-    }
-
     /**
      * @param $origin SecurityGroup|string security group, ip range or single ip address
      * @param $port

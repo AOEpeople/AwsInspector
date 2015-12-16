@@ -8,7 +8,7 @@ class CollectionRegistry {
 
     /**
      * @param array $tags
-     * @return Collection
+     * @return \AwsInspector\Model\Collection
      */
     public static function getCollection(array $tags=[]) {
         $hash = serialize($tags);

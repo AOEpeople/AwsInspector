@@ -10,7 +10,7 @@ class Repository {
 
     /**
      * @param array $filters
-     * @return Collection
+     * @return \AwsInspector\Model\Collection
      * @throws \Exception
      */
     public function findSecurityGroups(array $filters=[]) {
@@ -18,7 +18,7 @@ class Repository {
         $result = $ec2Client->describeSecurityGroups(['Filters' => $filters]);
         $rows = $result->search('SecurityGroups[]');
 
-        $collection = new Collection();
+        $collection = new \AwsInspector\Model\Collection();
         foreach ($rows as $row) {
             $securityGroup = new SecurityGroup($row);
             if ($securityGroup !== false) {
@@ -30,7 +30,7 @@ class Repository {
 
     /**
      * @param array $tags
-     * @return Collection
+     * @return \AwsInspector\Model\Collection
      */
     public function findSecurityGroupsByTags(array $tags=array()) {
         foreach ($tags as $tagName => $tagValue) {
