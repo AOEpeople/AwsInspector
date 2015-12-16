@@ -17,34 +17,39 @@ namespace AwsInspector\Model\SecurityGroup;
 class SecurityGroup extends \AwsInspector\Model\AbstractResource
 {
 
-    public function getAssocTags() {
-        $assocTags = [];
-        foreach ($this->getTags() as $data) {
-            $assocTags[$data['Key']] = $data['Value'];
-        }
-        return $assocTags;
+    public function getAssocTags()
+    {
+        return $this->convertToAssocArray($this->getTags());
     }
 
     /**
-     * @param $cidrIp string ip range or single ip address
+     * @param $origin SecurityGroup|string security group, ip range or single ip address
      * @param $port
      * @param string $protocol
      * @return bool
      */
-    public function hasAccess($cidrIp, $port, $protocol='tcp') {
-        $isRange = (strpos($cidrIp, '/') !== false);
+    public function hasAccess($origin, $port, $protocol='tcp') {
         foreach ($this->getIpPermissions() as $permission) {
             if ($permission['IpProtocol'] != $protocol || $permission['FromPort'] != $port) {
                 continue;
             }
-            foreach ($permission['IpRanges'] as $ipRange) {
-                if ($isRange) {
-                    if ($cidrIp == $ipRange['CidrIp']) {
+            if ($origin instanceof SecurityGroup) {
+                foreach ($permission['UserIdGroupPairs'] as $idGroupPair) {
+                    if ($idGroupPair['GroupId'] == $origin->getGroupId()) {
                         return true;
                     }
-                } else {
-                    if ($this->ipMatchesCidr($cidrIp, $ipRange['CidrIp'])) {
-                        return true;
+                }
+            } else {
+                $isRange = (strpos($origin, '/') !== false);
+                foreach ($permission['IpRanges'] as $ipRange) {
+                    if ($isRange) {
+                        if ($origin == $ipRange['CidrIp']) {
+                            return true;
+                        }
+                    } else {
+                        if ($this->ipMatchesCidr($origin, $ipRange['CidrIp'])) {
+                            return true;
+                        }
                     }
                 }
             }

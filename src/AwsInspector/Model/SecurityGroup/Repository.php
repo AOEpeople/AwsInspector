@@ -4,7 +4,6 @@ namespace AwsInspector\Model\SecurityGroup;
 
 class Repository {
 
-
     public function findSecurityGroupByGroupId($groupId) {
         throw new \Exception('Not implemented yet');
     }

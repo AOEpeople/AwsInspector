@@ -5,6 +5,14 @@ namespace AwsInspector\Model\Ec2;
 use AwsInspector\Ssh\Connection;
 use AwsInspector\Ssh\PrivateKey;
 
+/**
+ * Class Instance
+ *
+ * @method getInstanceId()
+ * @method getTags()
+ * @method getPublicIpAddress()
+ * @method getPrivateIpAddress()
+ */
 class Instance extends \AwsInspector\Model\AbstractResource
 {
 
@@ -20,21 +28,6 @@ class Instance extends \AwsInspector\Model\AbstractResource
         }
     }
 
-    public function getInstanceId()
-    {
-        return $this->apiData['InstanceId'];
-    }
-
-    public function getPublicIp()
-    {
-        return isset($this->apiData['PublicIpAddress']) ? $this->apiData['PublicIpAddress'] : false;
-    }
-
-    public function getPrivateIp()
-    {
-        return isset($this->apiData['PrivateIpAddress']) ? $this->apiData['PrivateIpAddress'] : false;
-    }
-
     public function getPrivateKey()
     {
         $keyName = $this->apiData['KeyName'];
@@ -44,8 +37,19 @@ class Instance extends \AwsInspector\Model\AbstractResource
         return PrivateKey::get('keys/' . $keyName . '.pem');
     }
 
+    public function getAssocTags()
+    {
+        return $this->convertToAssocArray($this->getTags());
+    }
+
+    public function getTag($key)
+    {
+        $tags = $this->getAssocTags();
+        return isset($tags[$key]) ? $tags[$key] : null;
+    }
+
     /**
-     * Get jump host (
+     * Get jump host (bastion server)
      *
      * Overwrite this method in your inheriting class and return
      * a \AwsInspector\Model\Ec2\Instance representing your bastion server
@@ -54,12 +58,12 @@ class Instance extends \AwsInspector\Model\AbstractResource
      */
     public function getJumpHost()
     {
-       return null;
+        return null;
     }
 
     public function getConnectionIp()
     {
-        return $this->getPublicIp() ? $this->getPublicIp() : $this->getPrivateIp();
+        return $this->getPublicIpAddress() ? $this->getPublicIpAddress() : $this->getPrivateIpAddress();
     }
 
     /**

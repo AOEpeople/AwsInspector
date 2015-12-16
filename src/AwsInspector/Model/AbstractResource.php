@@ -35,4 +35,12 @@ abstract class AbstractResource
         throw new \Exception('Invalid method');
     }
 
+    protected function convertToAssocArray(array $tags) {
+        $assocTags = [];
+        foreach ($tags as $data) {
+            $assocTags[$data['Key']] = $data['Value'];
+        }
+        return $assocTags;
+    }
+
 }
