@@ -30,10 +30,7 @@ class Repository
 
         $collection = new \AwsInspector\Model\Collection();
         foreach ($rows as $row) {
-            $elb = new Elb($row);
-            if ($elb !== false) {
-                $collection->attach($elb);
-            }
+            $collection->attach(new Elb($row));
         }
         return $collection;
     }

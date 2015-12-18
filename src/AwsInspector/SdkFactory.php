@@ -35,8 +35,8 @@ class SdkFactory {
      * @return \Aws\AwsClientInterface
      * @throws \Exception
      */
-    public static function getClient($client, $profile='default') {
-        return self::getSdk($profile)->createClient($client);
+    public static function getClient($client, $profile='default', array $args=[]) {
+        return self::getSdk($profile)->createClient($client, $args);
     }
 
 }
