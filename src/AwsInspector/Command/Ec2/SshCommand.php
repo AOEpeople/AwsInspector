@@ -121,7 +121,7 @@ class SshCommand extends AbstractCommand
             throw new \Exception('Could not find instance');
         }
 
-        $output->writeln('[Found instance. Connection IP: ' . $instance->getConnectionIp() . ']');
+        $output->writeln('[Found instance: ' . $instance->getDefaultUsername() . '@' . $instance->getConnectionIp() . ']');
 
         $connection = $instance->getSshConnection();
 

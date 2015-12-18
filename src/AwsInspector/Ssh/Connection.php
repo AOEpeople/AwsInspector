@@ -67,7 +67,7 @@ class Connection
 
         if (!is_null($this->jumpHost)) {
             if ($output = Registry::get('output')) { /* @var $output OutputInterface */
-                $output->writeln("[Using jump host: " . $this->jumpHost->getPublicIpAddress() . "]");
+                $output->writeln("[Using jump host: " . $this->jumpHost->getDefaultUsername() . '@' . $this->jumpHost->getPublicIpAddress() . "]");
             }
             $proxyCommand = new Command($this->jumpHost->getSshConnection(), 'nc %h %p');
             $parts[] = '-o ProxyCommand="' . $proxyCommand->__toString() . '"';

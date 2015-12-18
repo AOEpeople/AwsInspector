@@ -12,25 +12,58 @@ use AwsInspector\Ssh\PrivateKey;
  * @method getTags()
  * @method getPublicIpAddress()
  * @method getPrivateIpAddress()
+ * @method getImageId()
+ * @method getState()
+ * @method getPrivateDnsName()
+ * @method getPublicDnsName()
+ * @method getStateTransitionReason()
+ * @method getKeyName()
+ * @method getAmiLaunchIndex()
+ * @method getProductCodes()
+ * @method getInstanceType()
+ * @method getLaunchTime()
+ * @method getPlacement()
+ * @method getMonitoring()
+ * @method getSubnetId()
+ * @method getVpcId()
+ * @method getArchitecture()
+ * @method getRootDeviceType()
+ * @method getRootDeviceName()
+ * @method getBlockDeviceMappings()
+ * @method getVirtualizationType()
+ * @method getClientToken()
+ * @method getSecurityGroups()
+ * @method getSourceDestCheck()
+ * @method getHypervisor()
+ * @method getNetworkInterfaces()
+ * @method getEbsOptimized()
  */
 class Instance extends \AwsInspector\Model\AbstractResource
 {
 
-    protected $username = 'ubuntu';
+    protected $username;
 
     protected $multiplexSshConnection = false;
 
-    public function __construct(array $apiData)
+    public function getDefaultUsername()
     {
-        parent::__construct($apiData);
-        if (getenv('AWSINSPECTOR_DEFAULT_EC2_USER')) {
-            $this->username = getenv('AWSINSPECTOR_DEFAULT_EC2_USER');
+        if (is_null($this->username)) {
+            if (getenv('AWSINSPECTOR_DEFAULT_EC2_USER')) {
+                $this->username = getenv('AWSINSPECTOR_DEFAULT_EC2_USER');
+            } else {
+                $this->username = 'ec2-user';
+                $ami = $this->getImageId();
+                if (in_array($ami, ['ami-47a23a30', 'ami-47360a30'])) {
+                    $this->username = 'ubuntu';
+                }
+            }
         }
+        return $this->username;
     }
 
     public function getPrivateKey()
     {
-        $keyName = $this->apiData['KeyName'];
+        $keyName = $this->getKeyName();
         if (empty($keyName)) {
             throw new \Exception('No KeyName found');
         }
@@ -64,7 +97,7 @@ class Instance extends \AwsInspector\Model\AbstractResource
     public function getSshConnection()
     {
         return new Connection(
-            $this->username,
+            $this->getDefaultUsername(),
             $this->getConnectionIp(),
             $this->getPrivateKey(),
             $this->getJumpHost(),
