@@ -45,8 +45,8 @@ class CacheCluster extends \AwsInspector\Model\AbstractResource
             $parts['prefix'] = 'arn:aws:elasticache';
             $parts['region'] = getenv('HURRICANE_TEST_REGION');
             $parts['AccountId'] = $accountId;
-            $parts['clusterprefix'] = 'cluster';
-            $parts['id'] = $this->getCacheClusterId();
+            $parts['resourcetype'] = 'cluster';
+            $parts['name'] = $this->getCacheClusterId();
             $this->resourceName = implode(':', $parts);
         }
         return $this->resourceName;
