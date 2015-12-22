@@ -2,6 +2,7 @@
 
 namespace AwsInspector\Model\Ec2;
 
+use AwsInspector\Helper\Curl;
 use AwsInspector\Ssh\Connection;
 use AwsInspector\Ssh\PrivateKey;
 
@@ -136,7 +137,8 @@ class Instance extends \AwsInspector\Model\AbstractResource
 
     public function getHttpStatusCode($url)
     {
-        $result = $this->exec('curl -s -o /dev/null -w "%{http_code}" ' . escapeshellarg($url));
+        $curlHelper = new Curl($url);
+        $result = $this->exec($curlHelper->getResponseStatusCodeCommand());
         return intval(end($result['output']));
     }
 

@@ -30,7 +30,7 @@ class Command {
     }
 
     public function exec() {
-        file_put_contents('/tmp/exec.log', $this->__toString() . "\n", FILE_APPEND);
+        // file_put_contents('/tmp/exec.log', $this->__toString() . "\n", FILE_APPEND);
         $returnVar = null;
         exec($this->__toString(), $output, $returnVar);
         return [
