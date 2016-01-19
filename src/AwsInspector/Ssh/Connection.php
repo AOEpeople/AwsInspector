@@ -79,7 +79,7 @@ class Connection
         }
 
         $parts[] = '-o ConnectTimeout=5';
-        $parts[] = '-o LogLevel=QUIET';
+        //$parts[] = '-o LogLevel=QUIET';
         $parts[] = '-o StrictHostKeyChecking=no';
         $parts[] = '-t'; // Force pseudo-tty allocation.
         $parts[] = "{$this->username}@{$this->host}";
