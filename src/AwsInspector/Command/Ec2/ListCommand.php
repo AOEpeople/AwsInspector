@@ -40,11 +40,12 @@ class ListCommand extends AbstractCommand
 
         $mapping = [
             'InstanceId' => 'InstanceId',
+            'ImageId' => 'ImageId',
             'State' => 'State.Name',
             'SubnetId' => 'SubnetId',
             'AZ' => 'Placement.AvailabilityZone',
-            'PublicIpAddress' => 'PublicIpAddress',
-            'PrivateIpAddress' => 'PrivateIpAddress',
+            'PublicIp' => 'PublicIpAddress',
+            'PrivateIp' => 'PrivateIpAddress',
             'KeyName' => 'KeyName'
         ];
 
