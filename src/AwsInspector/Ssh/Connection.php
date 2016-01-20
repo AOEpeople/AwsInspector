@@ -40,6 +40,11 @@ class Connection
     protected $jumpHost;
 
     /**
+     * @var array
+     */
+    protected static $multiplexedConnections = [];
+
+    /**
      * Connection constructor.
      *
      * @param $username
@@ -74,17 +79,29 @@ class Connection
         }
 
         if ($this->multiplex) {
-            // $parts[] = '-o ControlPersist=yes -o ControlMaster=auto -S ~/mux_%%r@%%h:%%p';
-            $parts[] = '-o ControlPersist=yes -o ControlMaster=auto -S ~/mux_'.$this->username.'@'.$this->host.':22';
+            $connection = "~/mux_{$this->username}@{$this->host}:22";
+            self::$multiplexedConnections[$connection] = "$connection {$this->host}";
+            $parts[] = "-o ControlPersist=yes -o ControlMaster=auto -S $connection";
         }
 
         $parts[] = '-o ConnectTimeout=5';
         //$parts[] = '-o LogLevel=QUIET';
         $parts[] = '-o StrictHostKeyChecking=no';
-        $parts[] = '-t'; // Force pseudo-tty allocation.
+        // $parts[] = '-t'; // Force pseudo-tty allocation.
         $parts[] = "{$this->username}@{$this->host}";
 
         return implode(' ', $parts);
+    }
+
+    /**
+     * Close all multiplexed connections
+     */
+    public static function closeMuxConnections()
+    {
+        foreach (self::$multiplexedConnections as $key => $connection) {
+            exec("ssh -O stop -S $connection");
+            unset(self::$multiplexedConnections[$key]);
+        }
     }
 
     /**
