@@ -99,7 +99,7 @@ class Connection
     public static function closeMuxConnections()
     {
         foreach (self::$multiplexedConnections as $key => $connection) {
-            exec("ssh -O stop -S $connection");
+            exec("ssh -O stop -o LogLevel=QUIET -S $connection > /dev/null 2>&1");
             unset(self::$multiplexedConnections[$key]);
         }
     }
