@@ -106,32 +106,35 @@ class Instance extends \AwsInspector\Model\AbstractResource
         );
     }
 
-    public function exec($command)
+    public function exec($command, $asUser=null)
     {
+        if ($asUser) {
+            $command = 'sudo -u '.escapeshellarg($asUser) . ' '. $command;
+        }
         return $this->getSshConnection()->exec($command);
     }
 
-    public function fileExists($file)
+    public function fileExists($file, $asUser=null)
     {
-        $result = $this->exec('test -f ' . escapeshellarg($file));
+        $result = $this->exec('test -f ' . escapeshellarg($file), $asUser);
         return ($result['returnVar'] == 0);
     }
 
-    public function directoryExists($file)
+    public function directoryExists($file, $asUser=null)
     {
-        $result = $this->exec('test -d ' . escapeshellarg($file));
+        $result = $this->exec('test -d ' . escapeshellarg($file), $asUser);
         return ($result['returnVar'] == 0);
     }
 
-    public function linkExists($file)
+    public function linkExists($file, $asUser=null)
     {
-        $result = $this->exec('test -l ' . escapeshellarg($file));
+        $result = $this->exec('test -l ' . escapeshellarg($file), $asUser);
         return ($result['returnVar'] == 0);
     }
 
-    public function getFileContent($file)
+    public function getFileContent($file, $asUser=null)
     {
-        $result = $this->exec('cat ' . escapeshellarg($file));
+        $result = $this->exec('cat ' . escapeshellarg($file), $asUser);
         return implode("\n", $result['output']);
     }
 
