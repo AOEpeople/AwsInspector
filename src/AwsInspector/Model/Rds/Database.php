@@ -55,7 +55,7 @@ class Database extends \AwsInspector\Model\AbstractResource
 
             $parts = [];
             $parts['prefix'] = 'arn:aws:rds';
-            $parts['region'] = getenv('HURRICANE_TEST_REGION');
+            $parts['region'] = substr($this->getAvailabilityZone(), 0, -1);
             $parts['AccountId'] = $accountId;
             $parts['resourcetype'] = 'db';
             $parts['name'] = $this->getDBInstanceIdentifier();
