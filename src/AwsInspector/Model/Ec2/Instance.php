@@ -108,8 +108,9 @@ class Instance extends \AwsInspector\Model\AbstractResource
 
     public function exec($command, $asUser=null)
     {
+        $command = 'bash -c ' . escapeshellarg($command);
         if ($asUser) {
-            $command = 'sudo -u '.escapeshellarg($asUser) . ' '. $command;
+            $command = 'sudo -u '.escapeshellarg($asUser) . ' '. escapeshellarg($command);
         }
         return $this->getSshConnection()->exec($command);
     }
