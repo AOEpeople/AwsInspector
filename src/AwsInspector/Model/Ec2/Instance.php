@@ -106,6 +106,15 @@ class Instance extends \AwsInspector\Model\AbstractResource
         );
     }
 
+    /**
+     * @return \AwsInspector\Model\Collection
+     */
+    public function getEbsVolumes()
+    {
+        $ebsRepository = new \AwsInspector\Model\Ebs\Repository();
+        return $ebsRepository->findEbsVolumesByInstanceId($this->getInstanceId());
+    }
+
     public function exec($command, $asUser=null)
     {
         if ($asUser) {
