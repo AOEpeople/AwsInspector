@@ -25,6 +25,7 @@ namespace AwsInspector\Model\ElastiCache;
  * @method getSecurityGroups()
  * @method getSnapshotRetentionLimit()
  * @method getSnapshotWindow()
+ * @method getCacheNodes()
  */
 class CacheCluster extends \AwsInspector\Model\AbstractResource
 {

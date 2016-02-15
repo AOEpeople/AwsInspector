@@ -19,7 +19,7 @@ class Repository
 
     public function findCacheClusters()
     {
-        $result = $this->elastiCacheClient->describeCacheClusters();
+        $result = $this->elastiCacheClient->describeCacheClusters(['ShowCacheNodeInfo' => true]);
         $rows = $result->search('CacheClusters[]');
 
         $collection = new \AwsInspector\Model\Collection();
