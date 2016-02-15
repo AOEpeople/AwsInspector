@@ -54,7 +54,7 @@ class Instance extends \AwsInspector\Model\AbstractResource
             } else {
                 $this->username = 'ec2-user';
                 $ami = $this->getImageId();
-                if (in_array($ami, ['ami-47a23a30', 'ami-47360a30'])) {
+                if (in_array($ami, ['ami-47a23a30', 'ami-47360a30', 'ami-d05e75b8'])) {
                     $this->username = 'ubuntu';
                 }
             }
