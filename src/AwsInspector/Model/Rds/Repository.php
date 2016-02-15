@@ -36,14 +36,20 @@ class Repository
     public function findDatabasesByTags(array $tags = array())
     {
         $databases = $this->findDatabases();
-        $matchingElbs = new Collection();
+        $matchingDatabases = new Collection();
         foreach ($databases as $database) {
             /* @var $database Database */
-            if ($database->matchesTags($tags)) {
-                $matchingElbs->attach($database);
+            try {
+                if ($database->matchesTags($tags)) {
+                    $matchingDatabases->attach($database);
+                }
+            } catch (\Aws\Rds\Exception\RdsException $e) {
+                if ($e->getAwsErrorCode() != 'AccessDenied') {
+                    throw $e;
+                }
             }
         }
-        return $matchingElbs;
+        return $matchingDatabases;
     }
 
 }
