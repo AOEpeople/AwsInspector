@@ -14,7 +14,8 @@ class SdkFactory {
         if (!isset(self::$sdks[$profile])) {
             $params = [
                 'version' => 'latest',
-                'region' => getenv('AWS_DEFAULT_REGION')
+                'region' => getenv('AWS_DEFAULT_REGION'),
+                'retries' => 20
             ];
             if ($profile != 'default') {
                 $profileManager = new ProfileManager();
