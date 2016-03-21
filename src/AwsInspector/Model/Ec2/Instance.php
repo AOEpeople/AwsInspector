@@ -49,7 +49,9 @@ class Instance extends \AwsInspector\Model\AbstractResource
     public function getDefaultUsername()
     {
         if (is_null($this->username)) {
-            if (getenv('AWSINSPECTOR_DEFAULT_EC2_USER')) {
+            if ($this->getTag('inspector:user')) {
+                $this->username = $this->getTag('inspector:user');
+            } elseif (getenv('AWSINSPECTOR_DEFAULT_EC2_USER')) {
                 $this->username = getenv('AWSINSPECTOR_DEFAULT_EC2_USER');
             } else {
                 $this->username = 'ec2-user';
@@ -81,6 +83,16 @@ class Instance extends \AwsInspector\Model\AbstractResource
      */
     public function getJumpHost()
     {
+        if ($jumpHostTags = $this->getTag('inspector:jump')) {
+            $ec2Repository = new Repository();
+            $tagPairs = explode(',', $jumpHostTags);
+            $tags = [];
+            foreach ($tagPairs as $tagPair) {
+                list($key, $value) = explode(':', $tagPair);
+                $tags[trim($key)] = trim($value);
+            }
+            return $ec2Repository->findEc2InstancesByTags($tags)->getFirst();
+        }
         return null;
     }
 
@@ -97,11 +109,12 @@ class Instance extends \AwsInspector\Model\AbstractResource
      */
     public function getSshConnection()
     {
+        $jumpHost = $this->getJumpHost();
         return new Connection(
             $this->getDefaultUsername(),
-            $this->getConnectionIp(),
+            $jumpHost ? $this->getPrivateIpAddress() : $this->getConnectionIp(),
             $this->getPrivateKey(),
-            $this->getJumpHost(),
+            $jumpHost,
             $this->multiplexSshConnection
         );
     }
