@@ -10,7 +10,11 @@ class ProfileManager {
         if (!is_file('profiles.yml')) {
             if (is_file('profiles.yml.encrypted')) {
                 if (class_exists('\Vault\Vault')) {
-                    $configYaml = \Vault\Vault::open('profiles.yml.encrypted');
+                    try {
+                        $configYaml = \Vault\Vault::open('profiles.yml.encrypted');
+                    } catch (\Exception $e) {
+                        throw new \Exception('Error decrypting profiles.yml.encrypted', 0, $e);
+                    }
                 } else {
                     throw new \Exception('Please install aoepeople/vault');
                 }
