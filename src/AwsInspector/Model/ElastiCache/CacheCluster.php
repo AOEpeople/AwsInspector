@@ -41,7 +41,10 @@ class CacheCluster extends \AwsInspector\Model\AbstractResource
             // TODO: this should be changed!
             $region = getenv('HURRICANE_TEST_REGION');
             if (empty($region)) {
-                throw new \Exception('Region missing');
+                $region = getenv('AWS_DEFAULT_REGION');
+                if (empty($region)) {
+                    throw new \Exception('Region missing');
+                }
             }
 
             // get account id from current user

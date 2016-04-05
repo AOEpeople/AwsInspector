@@ -4,8 +4,21 @@ namespace AwsInspector\Model\SecurityGroup;
 
 class Repository {
 
+    /**
+     * @param $groupId
+     * @return \AwsInspector\Model\SecurityGroup\SecurityGroup
+     * @throws \Exception
+     */
     public function findSecurityGroupByGroupId($groupId) {
-        throw new \Exception('Not implemented yet');
+        $ec2Client = \AwsInspector\SdkFactory::getClient('ec2'); /* @var $ec2Client \Aws\Ec2\Ec2Client */
+        $result = $ec2Client->describeSecurityGroups(['GroupIds' => [$groupId]]);
+        $rows = $result->search('SecurityGroups[]');
+        if (count($rows) != 1) {
+            throw new \Exception('Did not find exactly one security group');
+        }
+        $row = end($rows);
+        $securityGroup = new SecurityGroup($row);
+        return $securityGroup;
     }
 
     /**
@@ -15,7 +28,7 @@ class Repository {
      */
     public function findSecurityGroups(array $filters=[]) {
         $ec2Client = \AwsInspector\SdkFactory::getClient('ec2'); /* @var $ec2Client \Aws\Ec2\Ec2Client */
-        $result = $ec2Client->describeSecurityGroups(['Filters' => $filters]);
+        $result = $ec2Client->describeSecurityGroups(count($filters) ? ['Filters' => $filters]: []);
         $rows = $result->search('SecurityGroups[]');
 
         $collection = new \AwsInspector\Model\Collection();

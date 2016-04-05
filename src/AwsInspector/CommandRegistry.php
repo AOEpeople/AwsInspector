@@ -12,7 +12,8 @@ class CommandRegistry {
             new \AwsInspector\Command\Profile\DisableCommand(),
             new \AwsInspector\Command\Ec2\ListCommand(),
             new \AwsInspector\Command\Ec2\SshCommand(),
-            new \AwsInspector\Command\Agent\AddIdentityCommand()
+            new \AwsInspector\Command\Agent\AddIdentityCommand(),
+            new \AwsInspector\Command\Graph\NetworkCommand()
         ];
     }
 

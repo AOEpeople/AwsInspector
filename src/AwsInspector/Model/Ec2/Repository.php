@@ -39,6 +39,15 @@ class Repository {
     }
 
     /**
+     * @param $securityGroupId
+     * @return \AwsInspector\Model\Collection
+     */
+    public function findEc2InstancesBySecurityGroupId($securityGroupId) {
+        $filter = [['Name' => 'instance.group-id', "Values" => [$securityGroupId]]];
+        return $this->findEc2Instances([$filter]);
+    }
+
+    /**
      * @param array $filters
      * @return \AwsInspector\Model\Collection
      * @throws \Exception

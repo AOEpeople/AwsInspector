@@ -62,4 +62,48 @@ class SecurityGroup extends \AwsInspector\Model\AbstractResource
         return ($ip & $mask) == $subnet;
     }
 
+    /**
+     * @return array array of security group ids
+     */
+    public function getIngressSecurityGroupIds()
+    {
+        $ingressSecurityGroupIds = [];
+        $linkLabelTmp = [];
+        foreach ($this->getIpPermissions() as $type) {
+
+            $protocol = ($type['IpProtocol'] == '-1') ? 'All' : $type['IpProtocol'];
+            $ports = 'All';
+            if (!empty($type['FromPort']) && !empty($type['ToPort'])) {
+                if ($type['FromPort'] == $type['ToPort']) {
+                    $ports = $type['FromPort'];
+                } else {
+                    $ports = $type['FromPort'] . '-' .$type['toPort'];
+                }
+            }
+
+            foreach ($type['UserIdGroupPairs'] as $userIdGroupPair) {
+                $ingressSecurityGroupId = $userIdGroupPair['GroupId'];
+                $linkLabelTmp[$ingressSecurityGroupId][$protocol][] = $ports;
+            }
+
+        }
+
+        foreach ($linkLabelTmp as $source => $data) {
+            $tmp = [];
+            foreach ($data as $protocol => $linksPerProtocol) {
+                sort($linksPerProtocol);
+                $tmp[$protocol] = implode(',', $linksPerProtocol);
+            }
+            $tmp2 = [];
+            foreach ($tmp as $protocol => $links) {
+                $tmp2[] = "$protocol:$links";
+            }
+            $label = implode(', ', $tmp2);
+            $ingressSecurityGroupIds[$label] = $source;
+        }
+
+        return $ingressSecurityGroupIds;
+    }
+
+
 }
