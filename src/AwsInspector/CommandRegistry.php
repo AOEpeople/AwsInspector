@@ -14,7 +14,8 @@ class CommandRegistry {
             new \AwsInspector\Command\Ec2\SshCommand(),
             new \AwsInspector\Command\Agent\AddIdentityCommand(),
             new \AwsInspector\Command\CloudwatchLogs\SetRetentionCommand(),
-            new \AwsInspector\Command\CloudwatchLogs\DeleteLogGroupCommand()
+            new \AwsInspector\Command\CloudwatchLogs\DeleteLogGroupCommand(),
+            new \AwsInspector\Command\CloudwatchLogs\ShowLogGroupsCommand()
         ];
     }
 

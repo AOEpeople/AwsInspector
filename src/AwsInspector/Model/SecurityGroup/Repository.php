@@ -4,8 +4,13 @@ namespace AwsInspector\Model\SecurityGroup;
 
 class Repository {
 
+    /**
+     * @param $groupId
+     * @return SecurityGroup
+     */
     public function findSecurityGroupByGroupId($groupId) {
-        throw new \Exception('Not implemented yet');
+        $group = $this->findSecurityGroups([['Name' => 'group-id', 'Values' => [$groupId]]])->getFirst();
+        return $group;
     }
 
     /**
