@@ -52,7 +52,7 @@ class ShowLogGroupsCommand extends Command
                     $table->addRow([
                         $logGroup['logGroupName'],
                         isset($logGroup['retentionInDays']) ? $logGroup['retentionInDays'] : 'Never',
-                        round($logGroup['storedBytes'] / 1024*1024)
+                        round($logGroup['storedBytes'] / (1024*1024))
                     ]);
                     $totalBytes += $logGroup['storedBytes'];
                 }
