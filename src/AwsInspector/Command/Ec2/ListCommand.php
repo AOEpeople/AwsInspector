@@ -66,12 +66,15 @@ class ListCommand extends AbstractCommand
             $rows[] = $instance->extractData($mapping);
         }
 
-        $table = new \Symfony\Component\Console\Helper\Table($output);
-        $table
-            ->setHeaders(array_keys(end($rows)))
-            ->setRows($rows)
-        ;
-        $table->render();
+        if (count($rows)) {
+            $table = new \Symfony\Component\Console\Helper\Table($output);
+            $table
+                ->setHeaders(array_keys(end($rows)))
+                ->setRows($rows);
+            $table->render();
+        } else {
+            $output->writeln('No matching instances found.');
+        }
     }
 
 }

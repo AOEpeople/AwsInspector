@@ -15,7 +15,8 @@ class CommandRegistry {
             new \AwsInspector\Command\Agent\AddIdentityCommand(),
             new \AwsInspector\Command\CloudwatchLogs\SetRetentionCommand(),
             new \AwsInspector\Command\CloudwatchLogs\DeleteLogGroupCommand(),
-            new \AwsInspector\Command\CloudwatchLogs\ShowLogGroupsCommand()
+            new \AwsInspector\Command\CloudwatchLogs\ShowLogGroupsCommand(),
+            new \AwsInspector\Command\Clean\CleanSnapshotsCommand()
         ];
     }
 
