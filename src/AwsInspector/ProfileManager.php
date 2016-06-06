@@ -63,13 +63,17 @@ class ProfileManager {
         $mapping = [
             'region' => 'AWS_DEFAULT_REGION',
             'access_key' => 'AWS_ACCESS_KEY_ID',
-            'secret_key' => 'AWS_SECRET_ACCESS_KEY'
+            'secret_key' => 'AWS_SECRET_ACCESS_KEY',
+            'assume_role' => 'AWS_ASSUME_ROLE'
         ];
 
         $tmp = [];
         $tmp[] = 'AWSINSPECTOR_PROFILE='.$profile;
         foreach ($mapping as $key => $value) {
             if (empty($profileConfig[$key])) {
+                if ($key == 'assume_role') {
+                    continue;
+                }
                 throw new \Exception('Mising configuration: ' . $key);
             }
             $tmp[] = $mapping[$key].'='.$profileConfig[$key];
