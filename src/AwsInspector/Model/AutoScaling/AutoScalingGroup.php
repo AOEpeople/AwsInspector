@@ -54,4 +54,23 @@ class AutoScalingGroup extends \AwsInspector\Model\AbstractResource
     //    return $instances;
     //}
 
+    public function attachLoadBalancers(array $loadBalancers) {
+        $loadBalancerNames = [];
+        foreach ($loadBalancers as $loadBalancer) {
+            if (is_string($loadBalancer)) {
+                $loadBalancerNames[] = $loadBalancer;
+            } elseif (is_object($loadBalancer) && $loadBalancer instanceof \AwsInspector\Model\Elb\Elb) {
+                $loadBalancerNames[] = $loadBalancer->getLoadBalancerName();
+            } else {
+                throw new \InvalidArgumentException('Argument must be an array of strings or \AwsInspector\Model\Elb\Elb objects');
+            }
+        }
+        $asgClient = \AwsInspector\SdkFactory::getClient('AutoScaling'); /* @var $asgClient \Aws\AutoScaling\AutoScalingClient */
+        $result = $asgClient->attachLoadBalancers([
+            'AutoScalingGroupName' => $this->getAutoScalingGroupName(),
+            'LoadBalancerNames' => $loadBalancerNames,
+        ]);
+        return $result;
+    }
+
 }

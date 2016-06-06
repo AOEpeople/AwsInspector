@@ -28,6 +28,11 @@ class Repository {
         }
     }
 
+    public function getAllRecordSets()
+    {
+        return $this->recordSets;
+    }
+
     public function findByRecordSet($regex)
     {
         foreach ($this->recordSets as $name => $data) {

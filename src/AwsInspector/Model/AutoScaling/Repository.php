@@ -47,4 +47,15 @@ class Repository
         return $matchingElbs;
     }
 
+    public function findByAutoScalingGroupName($regex)
+    {
+        $collection = new \AwsInspector\Model\Collection();
+        foreach ($this->findAutoScalingGroups() as $autoScalingGroup) {  /* @var $autoScalingGroup AutoScalingGroup */
+            if (preg_match($regex, $autoScalingGroup->getAutoScalingGroupName())) {
+                $collection->attach($autoScalingGroup);
+            }
+        }
+        return $collection;
+    }
+
 }
