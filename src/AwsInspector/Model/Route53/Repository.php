@@ -16,16 +16,21 @@ class Repository {
     public function __construct($hostedZoneId)
     {
         $r53Client = SdkFactory::getClient('Route53', 'default', ['region' => 'us-east-1']); /* @var $r53Client \Aws\Route53\Route53Client */
-        $res = $r53Client->listResourceRecordSets([
-            'HostedZoneId' => $hostedZoneId
-        ]);
-        foreach ($res->search('ResourceRecordSets') as $recordSet) {
-            $name = $recordSet['Name'];
-            $type = $recordSet['Type'];
-            unset($recordSet['Name']);
-            unset($recordSet['Type']);
-            $this->recordSets[$name][$type] = $recordSet;
-        }
+        $nextRecordName = null;
+        do {
+            $res = $r53Client->listResourceRecordSets([
+                'HostedZoneId' => $hostedZoneId,
+                'StartRecordName' => $nextRecordName
+            ]);
+            foreach ($res->search('ResourceRecordSets') as $recordSet) {
+                $name = $recordSet['Name'];
+                $type = $recordSet['Type'];
+                unset($recordSet['Name']);
+                unset($recordSet['Type']);
+                $this->recordSets[$name][$type] = $recordSet;
+            }
+            $nextRecordName = $res->get('NextRecordName');
+        } while ($res->get('IsTruncated'));
     }
 
     public function getAllRecordSets()
